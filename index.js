@@ -1,15 +1,19 @@
-﻿const { Client, LocalAuth } = require('whatsapp-web.js'); // 👈 Importamos LocalAuth
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const puppeteer = require('puppeteer-core'); // usamos puppeteer-core para indicar Chrome
 
 const client = new Client({
-    authStrategy: new LocalAuth() // 👈 Guardará la sesión en .wwebjs_auth
+    authStrategy: new LocalAuth(),
+    puppeteer: {
+        executablePath: '/usr/bin/google-chrome-stable', // Chrome que ya viene en Render
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
 
 // Contador de mensajes automáticos por usuario
-const usuarioContador = {}; // { chatId: 0 }
-// Registro de opciones ya respondidas por usuario
-const usuarioOpcionesRespondidas = {}; // { chatId: Set(['1','2']) }
-
+const usuarioContador = {};
+const usuarioOpcionesRespondidas = {};
 const MAX_INTENTOS = 2;
 
 client.on('qr', qr => {
@@ -38,18 +42,15 @@ function obtenerMensaje(opcion) {
 client.on('message', message => {
     const chatId = message.from;
 
-    // Inicializamos contador y registro si no existen
     if (!usuarioContador[chatId]) usuarioContador[chatId] = 0;
     if (!usuarioOpcionesRespondidas[chatId]) usuarioOpcionesRespondidas[chatId] = new Set();
 
-    // Solo procesamos si el usuario no superó los intentos
     if (usuarioContador[chatId] < MAX_INTENTOS) {
-        const texto = message.body.replace(/\s+/g, ''); // eliminamos espacios
+        const texto = message.body.replace(/\s+/g, '');
         const partes = texto.split(/[, -]/).map(op => op.trim());
 
         partes.forEach(parte => {
             parte.split('').forEach(opcion => {
-                // Solo enviamos si esta opción aún no fue respondida
                 if (!usuarioOpcionesRespondidas[chatId].has(opcion)) {
                     const mensaje = obtenerMensaje(opcion);
                     if (mensaje) {
@@ -60,7 +61,6 @@ client.on('message', message => {
             });
         });
 
-        // Incrementamos contador de mensajes automáticos
         usuarioContador[chatId]++;
         console.log(`Usuario ${chatId} ha recibido ${usuarioContador[chatId]} mensajes automáticos. Opciones respondidas: ${Array.from(usuarioOpcionesRespondidas[chatId]).join(',')}`);
     } else {
