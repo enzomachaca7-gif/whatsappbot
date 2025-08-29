@@ -1,12 +1,7 @@
-#!/bin/bash
-
-# Actualizar apt (opcional, puede fallar en Render y está OK)
-sudo apt-get update || true
-
-# Instalar Chromium
-sudo apt-get install -y chromium-browser || true
-echo "✅ Chromium instalado correctamente"
-
-# Instalar dependencias de Node
+#!/usr/bin/env bash
+echo "✅ Instalando dependencias de Node..."
 npm install
+
+echo "✅ Instalando Chromium para Puppeteer..."
+npx puppeteer install
 
