@@ -1,0 +1,24 @@
+{
+  "name": "bot-whatsapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enzomachaca7-gif/whatsappbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/enzomachaca7-gif/whatsappbot/issues"
+  },
+  "homepage": "https://github.com/enzomachaca7-gif/whatsappbot#readme"
+}
